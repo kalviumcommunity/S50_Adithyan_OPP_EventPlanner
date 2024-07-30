@@ -1,7 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm> 
+#include <algorithm>
 
 using namespace std;
 
@@ -18,12 +18,12 @@ public:
         : name(name), date(date), time(time), location(location), description(description) {}
 
     virtual void display() const {
-        cout << "Event: " << name << "\nDate: " << date << "\nTime: " << time << "\nLocation: " << location << "\nDescription: " << description << endl;
+        cout << "Event: " << this->name << "\nDate: " << this->date << "\nTime: " << this->time
+             << "\nLocation: " << this->location << "\nDescription: " << this->description << endl;
     }
 
-    string getName() const { return name; }
+    string getName() const { return this->name; }
     void setName(const string& name) { this->name = name; }
-
 };
 
 class BusinessEvent : public Event {
@@ -35,8 +35,9 @@ public:
         : Event(name, date, time, location, description), organizer(organizer) {}
 
     void display() const override {
-        cout << "Business Event: " << name << "\nDate: " << date << "\nTime: " << time << "\nLocation: " << location
-             << "\nDescription: " << description << "\nOrganizer: " << organizer << endl;
+        cout << "Business Event: " << this->name << "\nDate: " << this->date << "\nTime: " << this->time
+             << "\nLocation: " << this->location << "\nDescription: " << this->description
+             << "\nOrganizer: " << this->organizer << endl;
     }
 };
 
@@ -46,18 +47,18 @@ private:
 
 public:
     ~EventPlanner() {
-        for (auto& event : events) {
+        for (auto& event : this->events) {
             delete event;
         }
-        events.clear();
+        this->events.clear();
     }
 
     void addEvent(Event* event) {
-        events.push_back(event);
+        this->events.push_back(event);
     }
 
     void displayEvents() const {
-        for (const auto& event : events) {
+        for (const auto& event : this->events) {
             event->display();
             cout << "-------------------------\n";
         }
@@ -89,16 +90,16 @@ public:
         if (eventType == 'B' || eventType == 'b') {
             cout << "Enter organizer name: ";
             getline(cin, organizer);
-            addEvent(new BusinessEvent(name, date, time, location, description, organizer));
+            this->addEvent(new BusinessEvent(name, date, time, location, description, organizer));
         } else {
-            addEvent(new Event(name, date, time, location, description));
+            this->addEvent(new Event(name, date, time, location, description));
         }
 
         cout << "Event added successfully!\n";
     }
 
     void eraseEvent(const string& eventName) {
-        auto it = remove_if(events.begin(), events.end(), [&](Event* event) {
+        auto it = remove_if(this->events.begin(), this->events.end(), [&](Event* event) {
             if (event->getName() == eventName) {
                 delete event;  
                 return true;   
@@ -106,8 +107,8 @@ public:
             return false;
         });
 
-        if (it != events.end()) {
-            events.erase(it, events.end());
+        if (it != this->events.end()) {
+            this->events.erase(it, this->events.end());
             cout << "Event \"" << eventName << "\" deleted successfully.\n";
         } else {
             cout << "Event \"" << eventName << "\" not found.\n";
