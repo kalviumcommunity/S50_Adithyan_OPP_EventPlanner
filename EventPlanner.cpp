@@ -1,11 +1,10 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#include <algorithm> // For std::remove_if
+#include <algorithm> 
 
 using namespace std;
 
-// Base class Event
 class Event {
 protected:
     string name;
@@ -22,14 +21,11 @@ public:
         cout << "Event: " << name << "\nDate: " << date << "\nTime: " << time << "\nLocation: " << location << "\nDescription: " << description << endl;
     }
 
-    // Getters and setters
     string getName() const { return name; }
     void setName(const string& name) { this->name = name; }
 
-    // Other getters and setters
 };
 
-// Derived class BusinessEvent inheriting from Event
 class BusinessEvent : public Event {
 private:
     string organizer;
@@ -44,14 +40,12 @@ public:
     }
 };
 
-// EventPlanner class managing a collection of events
 class EventPlanner {
 private:
     vector<Event*> events;
 
 public:
     ~EventPlanner() {
-        // Clean up allocated memory for events
         for (auto& event : events) {
             delete event;
         }
@@ -106,8 +100,8 @@ public:
     void eraseEvent(const string& eventName) {
         auto it = remove_if(events.begin(), events.end(), [&](Event* event) {
             if (event->getName() == eventName) {
-                delete event;  // Free memory
-                return true;   // Remove from vector
+                delete event;  
+                return true;   
             }
             return false;
         });
