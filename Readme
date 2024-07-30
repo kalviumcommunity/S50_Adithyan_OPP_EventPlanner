@@ -1,0 +1,15 @@
+
+# Simple Event Planner
+The Simple Event Planner is a console-based application written in C++. It allows users to create, view, and manage events, including business events and general events. The application provides a simple menu for adding events, viewing a list of events, and deleting specific events by name.
+
+## Features
+
+Add Event: Create a new event with details such as name, date, time, location, and description. For business events, an organizer can also be specified.
+View Events: Display a list of all events, showing detailed information for each.
+Delete Event: Remove an event from the list by specifying its name.
+
+## Classes
+
+Event: The base class representing a generic event with properties such as name, date, time, location, and description.
+BusinessEvent: A derived class from Event, representing business-specific events with an additional organizer property.
+EventPlanner: Manages a collection of events, allowing for adding, viewing, and deleting events.
