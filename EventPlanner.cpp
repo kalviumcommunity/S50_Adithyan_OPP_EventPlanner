@@ -17,8 +17,7 @@ public:
     Event(const string& name, const string& date, const string& time, const string& location, const string& description)
         : name(name), date(date), time(time), location(location), description(description) {}
 
-    virtual void display() const {
-        cout << "Event: " << this->name << "\nDate: " << this->date << "\nTime: " << this->time
+    virtual void display() const {        cout << "Event: " << this->name << "\nDate: " << this->date << "\nTime: " << this->time
              << "\nLocation: " << this->location << "\nDescription: " << this->description << endl;
     }
 
@@ -117,7 +116,7 @@ public:
 };
 
 int main() {
-    EventPlanner planner;
+    EventPlanner* planner = new EventPlanner(); 
     char choice;
     string eventName;
 
@@ -132,17 +131,17 @@ int main() {
 
         switch (choice) {
             case '1':
-                planner.createEvent();
+                planner->createEvent();
                 break;
             case '2':
                 cout << "\nEvents:\n";
-                planner.displayEvents();
+                planner->displayEvents();
                 break;
             case '3':
                 cout << "Enter the name of the event to delete: ";
                 cin.ignore();
                 getline(cin, eventName);
-                planner.eraseEvent(eventName);
+                planner->eraseEvent(eventName);
                 break;
             case '4':
                 cout << "Exiting program.\n";
@@ -154,5 +153,6 @@ int main() {
 
     } while (choice != '4');
 
+    delete planner;
     return 0;
 }
