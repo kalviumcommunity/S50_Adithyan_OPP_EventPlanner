@@ -7,6 +7,7 @@ using namespace std;
 
 class Event {
 protected:
+    static int totalEvents; 
     string name;
     string date;
     string time;
@@ -15,30 +16,51 @@ protected:
 
 public:
     Event(const string& name, const string& date, const string& time, const string& location, const string& description)
-        : name(name), date(date), time(time), location(location), description(description) {}
+        : name(name), date(date), time(time), location(location), description(description) {
+        totalEvents++;  
+    }
 
-    virtual void display() const {        cout << "Event: " << this->name << "\nDate: " << this->date << "\nTime: " << this->time
+    virtual ~Event() {
+        totalEvents--;
+    }
+
+    virtual void display() const {
+        cout << "Event: " << this->name << "\nDate: " << this->date << "\nTime: " << this->time
              << "\nLocation: " << this->location << "\nDescription: " << this->description << endl;
     }
 
     string getName() const { return this->name; }
     void setName(const string& name) { this->name = name; }
+
+    static int getTotalEvents() { return totalEvents; }
 };
 
+int Event::totalEvents = 0;  
 class BusinessEvent : public Event {
 private:
+    static int totalBusinessEvents;
     string organizer;
 
 public:
     BusinessEvent(const string& name, const string& date, const string& time, const string& location, const string& description, const string& organizer)
-        : Event(name, date, time, location, description), organizer(organizer) {}
+        : Event(name, date, time, location, description), organizer(organizer) {
+        totalBusinessEvents++;  
+    }
+
+    ~BusinessEvent() {
+        totalBusinessEvents--;
+    }
 
     void display() const override {
         cout << "Business Event: " << this->name << "\nDate: " << this->date << "\nTime: " << this->time
              << "\nLocation: " << this->location << "\nDescription: " << this->description
              << "\nOrganizer: " << this->organizer << endl;
     }
+
+    static int getTotalBusinessEvents() { return totalBusinessEvents; }
 };
+
+int BusinessEvent::totalBusinessEvents = 0;  
 
 class EventPlanner {
 private:
@@ -113,10 +135,15 @@ public:
             cout << "Event \"" << eventName << "\" not found.\n";
         }
     }
+
+    void displayStatistics() const {
+        cout << "Total Events: " << Event::getTotalEvents() << endl;
+        cout << "Total Business Events: " << BusinessEvent::getTotalBusinessEvents() << endl;
+    }
 };
 
 int main() {
-    EventPlanner* planner = new EventPlanner(); 
+    EventPlanner* planner = new EventPlanner();
     char choice;
     string eventName;
 
@@ -125,7 +152,8 @@ int main() {
         cout << "1. Add Event\n";
         cout << "2. View Events\n";
         cout << "3. Delete Event\n";
-        cout << "4. Exit\n";
+        cout << "4. Display Statistics\n";
+        cout << "5. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -144,6 +172,9 @@ int main() {
                 planner->eraseEvent(eventName);
                 break;
             case '4':
+                planner->displayStatistics();
+                break;
+            case '5':
                 cout << "Exiting program.\n";
                 break;
             default:
@@ -151,7 +182,7 @@ int main() {
                 break;
         }
 
-    } while (choice != '4');
+    } while (choice != '5');
 
     delete planner;
     return 0;
