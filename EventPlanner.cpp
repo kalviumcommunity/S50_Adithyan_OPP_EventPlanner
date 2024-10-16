@@ -33,9 +33,18 @@ public:
     void setName(const string& name) { this->name = name; }
 
     static int getTotalEvents() { return totalEvents; }
+
+    void calculateDuration(const string& startTime, const string& endTime) {
+        cout << "Calculating duration for event: " << name << " from " << startTime << " to " << endTime << endl;
+    }
+
+    void calculateDuration(int startHour, int startMinute, int endHour, int endMinute) {
+        cout << "Calculating duration for event: " << name << " from " << startHour << ":" << startMinute
+             << " to " << endHour << ":" << endMinute << endl;
+    }
 };
 
-int Event::totalEvents = 0; 
+int Event::totalEvents = 0;
 
 class BusinessEvent : public Event {
 private:
@@ -100,6 +109,41 @@ public:
         }
     }
 
+    void eraseEvent(const string& eventName) {
+        auto it = remove_if(this->events.begin(), this->events.end(), [&](Event* event) {
+            if (event->getName() == eventName) {
+                delete event;  
+                return true;   
+            }
+            return false;
+        });
+
+        if (it != this->events.end()) {
+            this->events.erase(it, this->events.end());
+            cout << "Event \"" << eventName << "\" deleted successfully.\n";
+        } else {
+            cout << "Event \"" << eventName << "\" not found.\n";
+        }
+    }
+
+    void displayStatistics() const {
+        cout << "Total Events: " << Event::getTotalEvents() << endl;
+        cout << "Total Business Events: " << BusinessEvent::getTotalBusinessEvents() << endl;
+    }
+
+    // New method to get an event by index
+    Event* getEvent(int index) const {
+        if (index >= 0 && index < events.size()) {
+            return events[index];
+        }
+        return nullptr; // Return null if index is out of bounds
+    }
+
+    // New method to get the number of events
+    int getEventCount() const {
+        return events.size();
+    }
+
     void createEvent() {
         string name, date, time, location, description, organizer, corporateSponsor;
         char eventType;
@@ -139,28 +183,6 @@ public:
 
         cout << "Event added successfully!\n";
     }
-
-    void eraseEvent(const string& eventName) {
-        auto it = remove_if(this->events.begin(), this->events.end(), [&](Event* event) {
-            if (event->getName() == eventName) {
-                delete event;  
-                return true;   
-            }
-            return false;
-        });
-
-        if (it != this->events.end()) {
-            this->events.erase(it, this->events.end());
-            cout << "Event \"" << eventName << "\" deleted successfully.\n";
-        } else {
-            cout << "Event \"" << eventName << "\" not found.\n";
-        }
-    }
-
-    void displayStatistics() const {
-        cout << "Total Events: " << Event::getTotalEvents() << endl;
-        cout << "Total Business Events: " << BusinessEvent::getTotalBusinessEvents() << endl;
-    }
 };
 
 int main() {
@@ -174,7 +196,8 @@ int main() {
         cout << "2. View Events\n";
         cout << "3. Delete Event\n";
         cout << "4. Display Statistics\n";
-        cout << "5. Exit\n";
+        cout << "5. Calculate Event Duration\n";
+        cout << "6. Exit\n";
         cout << "Enter your choice: ";
         cin >> choice;
 
@@ -195,7 +218,27 @@ int main() {
             case '4':
                 planner->displayStatistics();
                 break;
-            case '5':
+            case '5': {
+                // Example usage of the overloaded functions
+                string startTime, endTime;
+                cout << "Enter start time (HH:MM): ";
+                cin >> startTime;
+                cout << "Enter end time (HH:MM): ";
+                cin >> endTime;
+
+                // Check if there are any events
+                if (planner->getEventCount() > 0) {
+                    Event* event = planner->getEvent(0);
+                    if (event) {
+                        event->calculateDuration(startTime, endTime); // Calls the string version
+                    }
+                } else {
+                    cout << "No events available to calculate duration.\n";
+                }
+
+                break;
+            }
+            case '6':
                 cout << "Exiting program.\n";
                 break;
             default:
@@ -203,7 +246,7 @@ int main() {
                 break;
         }
 
-    } while (choice != '5');
+    } while (choice != '6');
 
     delete planner;
     return 0;
