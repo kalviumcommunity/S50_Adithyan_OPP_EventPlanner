@@ -7,7 +7,7 @@ using namespace std;
 
 class Event {
 protected:
-    static int totalEvents; 
+    static int totalEvents;
     string name;
     string date;
     string time;
@@ -17,7 +17,7 @@ protected:
 public:
     Event(const string& name, const string& date, const string& time, const string& location, const string& description)
         : name(name), date(date), time(time), location(location), description(description) {
-        totalEvents++;  
+        totalEvents++;
     }
 
     virtual ~Event() {
@@ -35,7 +35,8 @@ public:
     static int getTotalEvents() { return totalEvents; }
 };
 
-int Event::totalEvents = 0;  
+int Event::totalEvents = 0; 
+
 class BusinessEvent : public Event {
 private:
     static int totalBusinessEvents;
@@ -44,7 +45,7 @@ private:
 public:
     BusinessEvent(const string& name, const string& date, const string& time, const string& location, const string& description, const string& organizer)
         : Event(name, date, time, location, description), organizer(organizer) {
-        totalBusinessEvents++;  
+        totalBusinessEvents++;
     }
 
     ~BusinessEvent() {
@@ -60,7 +61,21 @@ public:
     static int getTotalBusinessEvents() { return totalBusinessEvents; }
 };
 
-int BusinessEvent::totalBusinessEvents = 0;  
+int BusinessEvent::totalBusinessEvents = 0;
+
+class CorporateEvent : public BusinessEvent {
+private:
+    string corporateSponsor;
+
+public:
+    CorporateEvent(const string& name, const string& date, const string& time, const string& location, const string& description, const string& organizer, const string& corporateSponsor)
+        : BusinessEvent(name, date, time, location, description, organizer), corporateSponsor(corporateSponsor) {}
+
+    void display() const override {
+        BusinessEvent::display();
+        cout << "Corporate Sponsor: " << this->corporateSponsor << endl;
+    }
+};
 
 class EventPlanner {
 private:
@@ -86,10 +101,10 @@ public:
     }
 
     void createEvent() {
-        string name, date, time, location, description, organizer;
+        string name, date, time, location, description, organizer, corporateSponsor;
         char eventType;
 
-        cout << "Enter event type (B for Business, O for Other): ";
+        cout << "Enter event type (B for Business, C for Corporate, O for Other): ";
         cin >> eventType;
 
         cout << "Enter event name: ";
@@ -112,6 +127,12 @@ public:
             cout << "Enter organizer name: ";
             getline(cin, organizer);
             this->addEvent(new BusinessEvent(name, date, time, location, description, organizer));
+        } else if (eventType == 'C' || eventType == 'c') {
+            cout << "Enter organizer name: ";
+            getline(cin, organizer);
+            cout << "Enter corporate sponsor: ";
+            getline(cin, corporateSponsor);
+            this->addEvent(new CorporateEvent(name, date, time, location, description, organizer, corporateSponsor));
         } else {
             this->addEvent(new Event(name, date, time, location, description));
         }
