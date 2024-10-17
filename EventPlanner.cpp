@@ -24,10 +24,7 @@ public:
         totalEvents--;
     }
 
-    virtual void display() const {
-        cout << "Event: " << this->name << "\nDate: " << this->date << "\nTime: " << this->time
-             << "\nLocation: " << this->location << "\nDescription: " << this->description << endl;
-    }
+    virtual void display() const = 0;
 
     string getName() const { return this->name; }
     void setName(const string& name) { this->name = name; }
@@ -112,8 +109,8 @@ public:
     void eraseEvent(const string& eventName) {
         auto it = remove_if(this->events.begin(), this->events.end(), [&](Event* event) {
             if (event->getName() == eventName) {
-                delete event;  
-                return true;   
+                delete event;
+                return true;
             }
             return false;
         });
@@ -131,15 +128,13 @@ public:
         cout << "Total Business Events: " << BusinessEvent::getTotalBusinessEvents() << endl;
     }
 
-    // New method to get an event by index
     Event* getEvent(int index) const {
         if (index >= 0 && index < events.size()) {
             return events[index];
         }
-        return nullptr; // Return null if index is out of bounds
+        return nullptr; 
     }
 
-    // New method to get the number of events
     int getEventCount() const {
         return events.size();
     }
@@ -178,7 +173,7 @@ public:
             getline(cin, corporateSponsor);
             this->addEvent(new CorporateEvent(name, date, time, location, description, organizer, corporateSponsor));
         } else {
-            this->addEvent(new Event(name, date, time, location, description));
+            cout << "Cannot create Event directly because it's an abstract class.\n";
         }
 
         cout << "Event added successfully!\n";
@@ -219,18 +214,16 @@ int main() {
                 planner->displayStatistics();
                 break;
             case '5': {
-                // Example usage of the overloaded functions
                 string startTime, endTime;
                 cout << "Enter start time (HH:MM): ";
                 cin >> startTime;
                 cout << "Enter end time (HH:MM): ";
                 cin >> endTime;
 
-                // Check if there are any events
                 if (planner->getEventCount() > 0) {
                     Event* event = planner->getEvent(0);
                     if (event) {
-                        event->calculateDuration(startTime, endTime); // Calls the string version
+                        event->calculateDuration(startTime, endTime);
                     }
                 } else {
                     cout << "No events available to calculate duration.\n";
